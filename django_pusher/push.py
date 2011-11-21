@@ -21,7 +21,7 @@ class UnregisteredNamespace(Exception):
 class Pusher(PusherAPI):
     
     def __init__(self, app_id=None, key=None, secret=None, **kwargs):
-        self._registry = set()
+        self._registry = {}
         
         if not hasattr(settings, "PUSHER_APP_ID") and app_id is None:
             raise ImproperlyConfigured("PUSHER_APP_ID must be set or app_id must be passed to Pusher")
@@ -45,23 +45,24 @@ class Pusher(PusherAPI):
         return super(Pusher, self).__getitem__(self.make_key(key))
     
     def make_key(self, key):
-        if getattr("PUSHER_SITE_SPECIFIC_CHANNELS", False):
+        if getattr(settings, "PUSHER_SITE_SPECIFIC_CHANNELS", False):
             current_site = Site.objects.get_current()
             return "%s@%s" % (key, current_site.pk)
         return key
     
-    def register(self, name):
+    def register(self, name, callback=None):
         """
         Registers a unique namespace with django_pusher.
         """
         if name in self._registry:
             raise NonUniqueNamespace("%s has already been registered." % name)
-        self._registry.add(name)
+        self._registry[name] = callback
     
     def unregister(self, name):
         """
         Unregisters a unique namespace from django_pusher.
         """
-        self._registry.discard(name)
+        if name in self._registry:
+            del self._registry[name]
 
 pusher = Pusher()
