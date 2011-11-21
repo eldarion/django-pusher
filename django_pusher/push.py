@@ -18,6 +18,12 @@ class UnregisteredNamespace(Exception):
     """
 
 
+class NamespaceClash(Exception):
+    """
+    Raised when more then one result is returned for a particular namespace.
+    """
+
+
 class Pusher(PusherAPI):
     
     def __init__(self, app_id=None, key=None, secret=None, **kwargs):
@@ -64,5 +70,19 @@ class Pusher(PusherAPI):
         """
         if name in self._registry:
             del self._registry[name]
+    
+    def allow_connection(self, request, channel):
+        """
+        Takes a Django request and determines if this request is allowed to
+        connect to the given channel. In case of namespace clashes we take the most
+        specific (longest) namespace.
+        """
+        namespaces = [x for x in self._registry.keys() if channel.startswith(x)]
+        if len(namespaces) == 1:
+            if self._registry[namespaces[0]] is not None:
+                return self._registry[namespaces[0]](request, channel)
+        elif len(namespaces) > 1:
+            raise NamespaceClash("The channel %s matches the namespace for [%s]" % (channel, ",".join(namespaces)))
+        return False
 
 pusher = Pusher()
