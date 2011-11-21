@@ -46,7 +46,7 @@ class Pusher(PusherAPI):
         super(Pusher, self).__init__(**kw)
     
     def __getitem__(self, key):
-        if key not in self._registry and [x for x in self._registry if key.startswith(x)]:
+        if key not in self._registry and not [x for x in self._registry if key.startswith(x)]:
             raise UnregisteredNamespace("%s has not been registered." % key)
         return self._real_getitem(self.make_key(key))
     
