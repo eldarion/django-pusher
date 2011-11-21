@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from django.contrib.site.models import Site
+from django.contrib.sites.models import Site
 
 from pusher import Pusher as PusherAPI
 
