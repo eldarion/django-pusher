@@ -48,7 +48,11 @@ class Pusher(PusherAPI):
     def __getitem__(self, key):
         if key not in self._registry and [x for x in self._registry if key.startswith(x)]:
             raise UnregisteredNamespace("%s has not been registered." % key)
-        return super(Pusher, self).__getitem__(self.make_key(key))
+        return self._real_getitem(self.make_key(key))
+    
+    def _real_getitem(self, key):
+        # @@@ This is Hacky
+        return super(Pusher, self).__getitem__(key)
     
     def make_key(self, key):
         if getattr(settings, "PUSHER_SITE_SPECIFIC_CHANNELS", False):
