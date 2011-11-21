@@ -81,6 +81,10 @@ class Pusher(PusherAPI):
         connect to the given channel. In case of namespace clashes we take the most
         specific (longest) namespace.
         """
+        if getattr(settings, "PUSHER_SITE_SPECIFIC_CHANNELS", False):
+            current_site = Site.objects.get_current()
+            channel = channel[:-len("@%s" % current_site.pk)]
+        
         namespaces = [x for x in self._registry.keys() if channel.startswith(x)]
         if len(namespaces) == 1:
             if self._registry[namespaces[0]] is not None:
