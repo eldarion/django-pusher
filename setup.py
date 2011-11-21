@@ -9,7 +9,7 @@ setup(
     version=VERSION,
     author="Eldarion",
     author_email="development@eldarion.com",
-    description="an extensible profile app designed to replace the profiles apps in Pinax",
+    description="a reusable app that wraps the api for pusher.com to allow registration of namespaces and auth callbacks",
     long_description=open("README.rst").read(),
     license="BSD",
     url="http://github.com/eldarion/django-pusher/",
