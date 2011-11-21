@@ -20,21 +20,22 @@ class UnregisteredNamespace(Exception):
 
 class Pusher(PusherAPI):
     
-    def __init__(self):
+    def __init__(self, app_id=None, key=None, secret=None, **kwargs):
         self._registry = set()
         
-        if not hasattr(settings, "PUSHER_APP_ID"):
-            raise ImproperlyConfigured("PUSHER_APP_ID must be set!")
-        if not hasattr(settings, "PUSHER_KEY"):
-            raise ImproperlyConfigured("PUSHER_KEY must be set!")
-        if not hasattr(settings, "PUSHER_SECRET"):
-            raise ImproperlyConfigured("PUSHER_SECRET must be set!")
+        if not hasattr(settings, "PUSHER_APP_ID") and app_id is None:
+            raise ImproperlyConfigured("PUSHER_APP_ID must be set or app_id must be passed to Pusher")
+        if not hasattr(settings, "PUSHER_KEY") and key is None:
+            raise ImproperlyConfigured("PUSHER_KEY must be set or key must be passed to Pusher")
+        if not hasattr(settings, "PUSHER_SECRET") and secret is None:
+            raise ImproperlyConfigured("PUSHER_SECRET must be set or secret must be passed to Pusher")
         
         kw = {
             "app_id": settings.PUSHER_APP_ID,
             "key": settings.PUSHER_KEY,
             "secret": settings.PUSHER_SECRET,
         }
+        kw.update(kwargs)
         
         super(Pusher, self).__init__(**kw)
     
