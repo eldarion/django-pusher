@@ -63,3 +63,5 @@ class Pusher(PusherAPI):
         Unregisters a unique namespace from django_pusher.
         """
         self._registry.discard(name)
+
+pusher = Pusher()
