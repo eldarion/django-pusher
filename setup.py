@@ -15,6 +15,7 @@ setup(
     url="http://github.com/eldarion/django-pusher/",
     packages=[
         "django_pusher",
+        "django_pusher.templatetags",
     ],
     classifiers=[
         "Environment :: Web Environment",
