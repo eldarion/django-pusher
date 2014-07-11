@@ -12,7 +12,7 @@ from django_pusher.push import pusher
 def pusher_auth(request):
     channel = request.POST["channel_name"]
     socket_id = request.POST["socket_id"]
-    
+
     if pusher.allow_connection(request, channel):
         r = pusher._real_getitem(channel).authenticate(socket_id)
         return HttpResponse(json.dumps(r), mimetype="application/json")
